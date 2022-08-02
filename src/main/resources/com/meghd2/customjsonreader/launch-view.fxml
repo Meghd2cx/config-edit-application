@@ -16,7 +16,7 @@
          <Font size="25.0" />
       </font></Label>
    <MFXButton fx:id="signIn" buttonType="RAISED" onAction="#onSignInButtonClick" rippleAnimateShadow="true" rippleColor="#c9c9c9" text="Github Sign-in " />
-   <MFXButton buttonType="RAISED" onAction="#onLaunchButtonClick" text="Launch" />
+   <MFXButton fx:id="launchApp" buttonType="RAISED" onAction="#onLaunchButtonClick" text="Launch" />
    <Label text="Vizio Summer 2022" textFill="#797979">
       <font>
          <Font size="7.0" />

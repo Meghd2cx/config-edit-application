@@ -22,6 +22,7 @@ public class MainApplication extends Application {
         stage.setTitle("JSON Reader");
         stage.setScene(scene);
         stage.show();
+
     }
 
     public static void main(String[] args) {
