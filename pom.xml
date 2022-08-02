@@ -111,6 +111,11 @@
             <version>17.0.20</version>
         </dependency>
         <dependency>
+            <groupId>com.microsoft.alm</groupId>
+            <artifactId>oauth2-useragent</artifactId>
+            <version>0.11.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.zaradai</groupId>
             <artifactId>gluon-core</artifactId>
             <version>0.0.1</version>
@@ -125,10 +130,40 @@
             <artifactId>javafx</artifactId>
             <version>3.1.7</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.meghd2.customjsonreader.MainApplication</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

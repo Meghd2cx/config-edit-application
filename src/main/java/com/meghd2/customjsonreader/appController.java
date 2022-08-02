@@ -15,7 +15,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class mainController implements Initializable {
+import org.json.*;
+
+public class appController implements Initializable {
 
     @FXML
     MenuItem openFile;
@@ -30,7 +32,7 @@ public class mainController implements Initializable {
     @FXML
     Label filePanelLabel;
     private File rootFolder;
-    private ArrayList<String> rootFolderFiles = new ArrayList<String>();
+    private ArrayList<String> subFilePaths = new ArrayList<String>();
 
 
     @Override
@@ -55,17 +57,17 @@ public class mainController implements Initializable {
     }
     public void reloadFileTree () {
         fileTree.getItems().clear();
-        rootFolderFiles.clear();
+        subFilePaths.clear();
         addToFileTree(rootFolder.listFiles(),0);
     }
     public void addToFileTree (File [] files ,int depth){
         for (File file : files) {
             if (file.isDirectory()) {
                 fileTree.getItems().add(getIndentedFilename(file,depth));
-                rootFolderFiles.add(file.getAbsolutePath());
+                subFilePaths.add(file.getAbsolutePath());
                 addToFileTree(file.listFiles(), depth + 1); // Calls same method again.
             } else {
-                rootFolderFiles.add(file.getAbsolutePath());
+                subFilePaths.add(file.getAbsolutePath());
                 fileTree.getItems().add(getIndentedFilename(file,depth));
             }
         }
@@ -80,10 +82,31 @@ public class mainController implements Initializable {
     }
     @FXML
     public void getSelectedFile () throws IOException {
+        System.gc();
         int fileIndex = fileTree.getSelectionModel().getSelectedIndex();
-        String selectedFilePath = rootFolderFiles.get(fileIndex);
+        String selectedFilePath = subFilePaths.get(fileIndex);
         Path selectedFile = Paths.get(selectedFilePath);
-        selectedFileField.setText(Files.readString(selectedFile, StandardCharsets.US_ASCII));
+        String fileContents = "";
+        try {
+           fileContents = Files.readString(selectedFile, StandardCharsets.US_ASCII);
+        }
+        catch (Exception e) {
+            //TODO: State in UI that JSON was not selected
+        }
+        selectedFileField.setText(fileContents);
+        System.out.println(isValid(fileContents));
+    }
+    private boolean isValid(String json) {
+        try {
+            new JSONObject(json);
+        } catch (JSONException e) {
+            try {
+                new JSONArray(json);
+            } catch (JSONException ne) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
