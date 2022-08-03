@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import model.UserProperties;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.ParseException;
@@ -53,11 +54,12 @@ public class launcherController implements Initializable{
     String redirectUri;
     String scope;
     String grantType;
+    String user_code = "";
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
         launchApp.setDisable(true);
-
+        validateSignin();
     }
         @FXML
     protected void onLaunchButtonClick() throws IOException {
@@ -80,18 +82,11 @@ public class launcherController implements Initializable{
     }
     @FXML
     protected void onSignInButtonClick() {
-        if (validateSignin()) {
-            signIn.setText("Signed In");
-            signIn.setDisable(true);
-            launchApp.setDisable(false);
-        }
-
-
         try {
             loadProperties();
-            String user_code = requestVerificationCode();
-            signIn.setTextFill(Color.valueOf("00FF00"));
+            user_code = requestVerificationCode();
             showGithubPopup(user_code);
+            validateSignin();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +96,22 @@ public class launcherController implements Initializable{
     }
 
     private boolean validateSignin() {
+        try {
+            retriveUserInfo();
 
+            signIn.setText("Signed In");
+            signIn.setDisable(true);
+            signIn.setTextFill(Color.valueOf("00FF00"));
+            launchApp.setDisable(false);
+            retriveUserInfo();
+
+            //TODO: Define user and app properties
+            MainApplication.userProperties = new UserProperties();
+
+
+        } catch (Exception e) {
+            return false;
+        }
         return true;
     }
 
@@ -111,7 +121,7 @@ public class launcherController implements Initializable{
         try {
             URIBuilder builder = new URIBuilder("https://github.com/login/oauth/access_token");
             builder.setParameter("client_id",clientId);
-            builder.setParameter("device_code","");
+            builder.setParameter("device_code",user_code);
             builder.setParameter("grant_type","urn:ietf:params:oauth:grant-type:device_code");
             HttpPost httpPost = new HttpPost(builder.build());
             httpPost.setHeader(new JSONHeader());
@@ -122,7 +132,6 @@ public class launcherController implements Initializable{
             }
             String responseStr = EntityUtils.toString(response.getEntity());
             JSONObject retJSON = new JSONObject(responseStr);
-
 
             //TODO: finish verification process
             System.out.println(responseStr);

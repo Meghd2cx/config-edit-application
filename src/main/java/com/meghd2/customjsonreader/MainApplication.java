@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import model.AppProperties;
+import model.UserProperties;
 
 import java.io.IOException;
 
@@ -13,6 +15,10 @@ public class MainApplication extends Application {
 
     public static Stage launchStage;
     public static FXMLLoader currentLoader;
+
+    public static AppProperties appProperties;
+
+    public static UserProperties userProperties;
 
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("launch-view.fxml"));
