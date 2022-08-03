@@ -1,10 +1,8 @@
 package com.meghd2.customjsonreader;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.AppProperties;
 import model.UserProperties;
@@ -16,9 +14,9 @@ public class MainApplication extends Application {
     public static Stage launchStage;
     public static FXMLLoader currentLoader;
 
-    public static AppProperties appProperties;
+    public static AppProperties appProperties = new AppProperties();
 
-    public static UserProperties userProperties;
+    public static UserProperties userProperties = null;
 
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("launch-view.fxml"));

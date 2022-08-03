@@ -20,22 +20,20 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 import model.UserProperties;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -47,21 +45,26 @@ public class launcherController implements Initializable{
     Button launchApp;
 
     public static Stage primaryStage = new Stage();
-
     String githubDomain;
     String clientId;
     String clientSecret;
     String redirectUri;
     String scope;
     String grantType;
+    String device_code = "";
     String user_code = "";
+
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
-        launchApp.setDisable(true);
-        validateSignin();
+        disableAppLaunch();
+        if(validateLocalUser()) {
+            enableAppLaunch();
+            return;
+        }
+        disableAppLaunch();
     }
-        @FXML
+    @FXML
     protected void onLaunchButtonClick() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(MainApplication.class.getResource("app-view.fxml"));
@@ -84,9 +87,12 @@ public class launcherController implements Initializable{
     protected void onSignInButtonClick() {
         try {
             loadProperties();
-            user_code = requestVerificationCode();
+            requestVerificationCode();
+            BackgroundService validateUserService = new BackgroundService(BackgroundServiceType.VALIDATEUSER, clientId, device_code);
+            Thread validateUserThread = new Thread(validateUserService, "validateUser");
+            validateUserThread.start();
             showGithubPopup(user_code);
-            validateSignin();
+            primaryStage.setOnCloseRequest(event -> verifyUserAuthentication(validateUserThread));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -95,54 +101,60 @@ public class launcherController implements Initializable{
 
     }
 
-    private boolean validateSignin() {
+    /** Enables or disables login based on validateUser thread status */
+    private void verifyUserAuthentication(Thread th) {
         try {
-            retriveUserInfo();
-
-            signIn.setText("Signed In");
-            signIn.setDisable(true);
-            signIn.setTextFill(Color.valueOf("00FF00"));
-            launchApp.setDisable(false);
-            retriveUserInfo();
-
-            //TODO: Define user and app properties
-            MainApplication.userProperties = new UserProperties();
-
-
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    private void retriveUserInfo() {
-        CloseableHttpClient client = HttpClients.createDefault();
-
-        try {
-            URIBuilder builder = new URIBuilder("https://github.com/login/oauth/access_token");
-            builder.setParameter("client_id",clientId);
-            builder.setParameter("device_code",user_code);
-            builder.setParameter("grant_type","urn:ietf:params:oauth:grant-type:device_code");
-            HttpPost httpPost = new HttpPost(builder.build());
-            httpPost.setHeader(new JSONHeader());
-
-            CloseableHttpResponse response = client.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() != 200){
-                throw new IOException("Github Authentication Failed");
-            }
-            String responseStr = EntityUtils.toString(response.getEntity());
-            JSONObject retJSON = new JSONObject(responseStr);
-
-            //TODO: finish verification process
-            System.out.println(responseStr);
-
-
-        } catch (URISyntaxException | IOException e) {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        if (!th.isAlive()) {
+            enableAppLaunch();
+            primaryStage.setOnCloseRequest(null);
+        }
+        else {
+            th.stop();
+            disableAppLaunch();
+        }
+    }
+    /** Methods used for validating signed in user*/
+    private boolean validateLocalUser() {
+        try {
+            File userFile = new File("src/main/resources/AppData/userProperties.json");
+            Scanner userFileScanner = new Scanner(userFile);
+            String userJSON = userFileScanner.nextLine();
+            JSONObject userReader = new JSONObject(userJSON);
+            String access_token = userReader.getString("access_token");
+            String token_type = userReader.getString("token_type");
+            String scope = userReader.getString("scope");
+
+            MainApplication.userProperties = new UserProperties();
+            MainApplication.userProperties.setAccess_token(access_token);
+            MainApplication.userProperties.setToken_type(token_type);
+            MainApplication.userProperties.setScope(scope);
+            return true;
+        }
+        catch (FileNotFoundException | JSONException | NoSuchElementException e) {
+            return false;
+        }
+
+    }
+    /** Methods used for enabling/disabling launcher controls */
+    private void enableAppLaunch() {
+        signIn.setText("Signed In");
+        signIn.setDisable(true);
+        signIn.setTextFill(Color.valueOf("00FF00"));
+        launchApp.setDisable(false);
+    }
+    private void disableAppLaunch() {
+        launchApp.setDisable(true);
+        signIn.setDisable(false);
+        signIn.setTextFill(Color.BLACK);
     }
 
-    private String requestVerificationCode() throws Exception {
+
+    /** Methods used for Github OAuth Verification */
+    private void requestVerificationCode() throws Exception {
 
         CloseableHttpClient client = HttpClients.createDefault();
 
@@ -157,12 +169,11 @@ public class launcherController implements Initializable{
         }
         String responseStr = EntityUtils.toString(response.getEntity());
         JSONObject retJSON = new JSONObject(responseStr);
-        String user_code = retJSON.getString("user_code");
+        user_code = retJSON.getString("user_code");
+        device_code = retJSON.getString("device_code");
         System.out.println(user_code);
 
         client.close();
-
-        return user_code;
     }
 
     /**
@@ -181,7 +192,8 @@ public class launcherController implements Initializable{
         grantType = appProps.getProperty("grantType");
     }
 
-    private void showGithubPopup(String user_code) throws URISyntaxException {
+    /** Displays new window with user_code and link for sign in*/
+    private void showGithubPopup(String user_code) {
 
 //        Popup popup = new Popup();
         //Creating popup pane
@@ -231,6 +243,7 @@ public class launcherController implements Initializable{
         primaryStage.setScene(popup);
         primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 }
 
