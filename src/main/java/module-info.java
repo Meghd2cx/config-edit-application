@@ -12,8 +12,11 @@ module com.meghd2.customjsonreader {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires com.google.gson;
-
+    requires MaterialFX;
+    requires VirtualizedFX;
 
     opens com.meghd2.customjsonreader to javafx.fxml;
+    opens model to com.google.gson;
+
     exports com.meghd2.customjsonreader;
 }

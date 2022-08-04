@@ -1,5 +1,6 @@
 package com.meghd2.customjsonreader;
 
+import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +19,8 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -37,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+//TODO: Improve background thread verification method. Currently operated on interrupting thread at timed interval
+//TODO: Create singleton thread based out of Main that runs login polling from app start, automatically killing itself after user is validated and saved
 public class launcherController implements Initializable{
 
     @FXML
@@ -70,7 +75,7 @@ public class launcherController implements Initializable{
         loader.setLocation(MainApplication.class.getResource("app-view.fxml"));
         Parent root = loader.load();
         MainApplication.currentLoader = loader;
-        //Rectangle bounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
         Rectangle bounds = new Rectangle(1920, 1080);
         Scene scene = new Scene(root,bounds.getWidth(),bounds.getHeight());
         //Sets main fxml as current scene
@@ -123,15 +128,8 @@ public class launcherController implements Initializable{
             File userFile = new File("src/main/resources/AppData/userProperties.json");
             Scanner userFileScanner = new Scanner(userFile);
             String userJSON = userFileScanner.nextLine();
-            JSONObject userReader = new JSONObject(userJSON);
-            String access_token = userReader.getString("access_token");
-            String token_type = userReader.getString("token_type");
-            String scope = userReader.getString("scope");
-
-            MainApplication.userProperties = new UserProperties();
-            MainApplication.userProperties.setAccess_token(access_token);
-            MainApplication.userProperties.setToken_type(token_type);
-            MainApplication.userProperties.setScope(scope);
+            Gson gson = new Gson();
+            MainApplication.appProperties.setUserProperties(gson.fromJson(userJSON,UserProperties.class));
             return true;
         }
         catch (FileNotFoundException | JSONException | NoSuchElementException e) {
@@ -160,7 +158,7 @@ public class launcherController implements Initializable{
 
         URIBuilder builder = new URIBuilder("https://github.com/login/device/code");
         builder.setParameter("client_id", clientId);
-        builder.setParameter("scope","repo");
+        builder.setParameter("scope","repo user project");
         HttpPost httpPost = new HttpPost(builder.build());
         httpPost.setHeader(new JSONHeader());
         CloseableHttpResponse response = client.execute(httpPost);
@@ -172,6 +170,10 @@ public class launcherController implements Initializable{
         user_code = retJSON.getString("user_code");
         device_code = retJSON.getString("device_code");
         System.out.println(user_code);
+
+        StringSelection stringSelection = new StringSelection(user_code);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
 
         client.close();
     }
@@ -219,7 +221,7 @@ public class launcherController implements Initializable{
         deviceCodeLabel.setStyle("-fx-font-size: 20");
 
         //Creating instructions label
-        Label instructionLabel = new Label("Type the device code into:");
+        Label instructionLabel = new Label("Paste the device code into:");
         instructionLabel.setAlignment(Pos.CENTER);
 
         Hyperlink githubLink = new Hyperlink();

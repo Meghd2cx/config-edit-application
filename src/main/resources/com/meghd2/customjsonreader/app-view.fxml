@@ -105,9 +105,10 @@
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <Label fx:id="fileTreeLabel" layoutX="14.0" layoutY="232.0" prefHeight="86.0" prefWidth="198.0" textAlignment="CENTER" textFill="RED" visible="false" AnchorPane.bottomAnchor="232.80000000000004" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="232.0" />
+                  <Label fx:id="fileTreeLabel" layoutX="14.0" layoutY="232.0" prefHeight="86.0" prefWidth="198.0" textAlignment="CENTER" textFill="RED" visible="false" AnchorPane.bottomAnchor="232.80000000000004" AnchorPane.topAnchor="232.0" />
                   <MFXProgressSpinner fx:id="fileProgressSpinner" layoutX="84.0" layoutY="250.0" visible="false" AnchorPane.bottomAnchor="250.80000000000004" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="250.0" />
-                  <MFXComboBox layoutX="3.0" layoutY="508.0" prefHeight="42.0" prefWidth="222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <MFXComboBox fx:id="repoComboBox" layoutX="3.0" layoutY="508.0" prefHeight="42.0" prefWidth="222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <MFXComboBox fx:id="orgComboBox" layoutX="93.0" layoutY="4.0" prefHeight="37.0" prefWidth="114.0" AnchorPane.rightAnchor="10.0" />
           </children>
         </AnchorPane>
       <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="546.0" prefWidth="444.0">
@@ -172,9 +173,12 @@
         </AnchorPane>
       </items>
     </SplitPane>
-      <AnchorPane VBox.vgrow="NEVER">
+      <AnchorPane>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
          <children>
-        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Account name:" AnchorPane.leftAnchor="2.0">
+        <Label fx:id="accountNameLabel" layoutX="53.0" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Account name:" AnchorPane.leftAnchor="60.0">
           <font>
             <Font size="11.0" fx:id="x3" />
           </font>
@@ -182,8 +186,8 @@
             <Color red="0.625" green="0.625" blue="0.625" fx:id="x4" />
           </textFill>
         </Label>
-            <Label fx:id="centerLowerLabel" layoutX="387.0" text="JSON File NOT Selected" textFill="RED" />
-        <Label font="$x3" maxWidth="-1.0" text="Repository - Branch" textFill="$x4" AnchorPane.rightAnchor="2.0" />
+            <Label fx:id="centerLowerLabel" layoutX="375.0" text="JSON File NOT Selected" textFill="RED" />
+        <Label alignment="CENTER_RIGHT" font="$x3" layoutX="744.0" maxWidth="-1.0" text="Repository - Branch" textFill="$x4" AnchorPane.rightAnchor="60.0" />
          </children>
       </AnchorPane>
   </children>

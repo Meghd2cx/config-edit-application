@@ -52,8 +52,8 @@ public class BackgroundService implements Runnable {
 
     private boolean validateSignin() {
 
-        MainApplication.userProperties = retriveUserInfo();
-        if (MainApplication.userProperties == null) {
+        MainApplication.appProperties.setUserProperties(retriveUserInfo());
+        if (MainApplication.appProperties.getUserProperties() == null) {
             return false;
         }
         return true;

@@ -1,5 +1,6 @@
 package com.meghd2.customjsonreader;
 
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -31,18 +32,30 @@ public class appController implements Initializable {
     ProgressIndicator fileProgressSpinner;
     @FXML
     Label filePanelLabel;
+    @FXML
+    Label accountNameLabel;
+    @FXML
+    MFXComboBox repoComboBox;
+    @FXML
+    MFXComboBox orgComboBox;
     private File rootFolder;
     private ArrayList<String> subFilePaths = new ArrayList<String>();
 
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
+        System.gc();
         if (rootFolder == null) {
             fileTree.setVisible(false);
             fileTreeLabel.setVisible(true);
             fileTreeLabel.setText("No Folder Selected");
         }
         fileTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        //Personalization through github api
+        accountNameLabel.setText(GithubService.getGithubUsername());
+        GithubService.getOrganizationList();
+
     }
     @FXML
     public void onOpenFileClick () {
@@ -65,7 +78,7 @@ public class appController implements Initializable {
             if (file.isDirectory()) {
                 fileTree.getItems().add(getIndentedFilename(file,depth));
                 subFilePaths.add(file.getAbsolutePath());
-                addToFileTree(file.listFiles(), depth + 1); // Calls same method again.
+                addToFileTree(file.listFiles(), depth + 1); // Recursive
             } else {
                 subFilePaths.add(file.getAbsolutePath());
                 fileTree.getItems().add(getIndentedFilename(file,depth));

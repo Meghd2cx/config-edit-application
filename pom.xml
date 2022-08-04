@@ -84,11 +84,11 @@
             <artifactId>gwt-user</artifactId>
             <version>2.9.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.glavo.materialfx</groupId>
-            <artifactId>materialfx</artifactId>
-            <version>11.13.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.glavo.materialfx</groupId>-->
+<!--            <artifactId>materialfx</artifactId>-->
+<!--            <version>11.13.5</version>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit -->
         <dependency>
             <groupId>eu.hansolo.fx</groupId>
@@ -144,6 +144,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>materialfx</artifactId>
+            <version>11.13.5</version>
         </dependency>
     </dependencies>
     <build>

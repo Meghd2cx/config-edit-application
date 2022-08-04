@@ -16,8 +16,6 @@ public class MainApplication extends Application {
 
     public static AppProperties appProperties = new AppProperties();
 
-    public static UserProperties userProperties = null;
-
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("launch-view.fxml"));
         currentLoader = fxmlLoader;
