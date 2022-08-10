@@ -53,6 +53,9 @@ public class appController implements Initializable {
         fileTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         //Personalization through github api
+        GithubService.updateAppUser();
+
+        //TODO: Use AppProperties object, not returned Objects from GithubService
         accountNameLabel.setText(GithubService.getGithubUsername());
         GithubService.getOrganizationList();
 

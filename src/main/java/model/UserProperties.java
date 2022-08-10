@@ -1,18 +1,26 @@
 package model;
 
 public class UserProperties {
-    String name;
-     String email;
-     String access_token;
-     String token_type;
-     String scope;
 
-    public String getName() {
-        return name;
+    String login;
+    int id;
+    String email;
+    String access_token;
+    String token_type;
+    String scope;
+
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public int getID() {return id;}
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {

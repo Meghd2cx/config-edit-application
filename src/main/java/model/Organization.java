@@ -16,8 +16,12 @@ public class Organization {
     private String public_members_url;
     private String avatar_url;
     private String description;
-
     private ArrayList<Repository> repos = new ArrayList<>();
+
+    public Organization(String login) {
+        this.login = login;
+    }
+
 
     public boolean addRepo(Repository repository) {
         return repos.add(repository);
