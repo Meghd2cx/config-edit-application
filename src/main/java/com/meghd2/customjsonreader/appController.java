@@ -1,9 +1,9 @@
 package com.meghd2.customjsonreader;
 
-import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import model.Repository;
 import org.json.*;
 
 public class appController implements Initializable {
@@ -35,9 +36,11 @@ public class appController implements Initializable {
     @FXML
     Label accountNameLabel;
     @FXML
-    MFXComboBox repoComboBox;
+    HBox orgRepoHBox;
     @FXML
-    MFXComboBox orgComboBox;
+    ComboBox repoComboBox;
+    @FXML
+    ComboBox orgComboBox;
     private File rootFolder;
     private ArrayList<String> subFilePaths = new ArrayList<String>();
 
@@ -50,10 +53,13 @@ public class appController implements Initializable {
             fileTreeLabel.setVisible(true);
             fileTreeLabel.setText("No Folder Selected");
         }
+
         fileTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        //Personalization through github api
-        GithubService.updateAppUser();
+        //Personalization through Github api
+        GithubService.updateAll();
+        updateOrgsDropdown();
+        updateReposDropdown();
 
         //TODO: Use AppProperties object, not returned Objects from GithubService
         accountNameLabel.setText(GithubService.getGithubUsername());
@@ -79,6 +85,9 @@ public class appController implements Initializable {
     public void addToFileTree (File [] files ,int depth){
         for (File file : files) {
             if (file.isDirectory()) {
+                if (file.getName().contains(".git")) {
+                    continue;
+                }
                 fileTree.getItems().add(getIndentedFilename(file,depth));
                 subFilePaths.add(file.getAbsolutePath());
                 addToFileTree(file.listFiles(), depth + 1); // Recursive
@@ -124,5 +133,40 @@ public class appController implements Initializable {
         }
         return true;
     }
+    private void updateOrgsDropdown() {
+        orgComboBox.getItems().addAll(MainApplication.appProperties.getOrgNames());
+    }
+    @FXML
+    private void updateReposDropdown() {
+        Object currentOrg = orgComboBox.getValue();
+        System.out.println("Current org: " + currentOrg);
+        if (currentOrg == null || currentOrg == "") {
+            return;
+        }
+        else {
+            ArrayList<Repository> repos = MainApplication.appProperties.getOrg(currentOrg.toString()).getRepos();
+            for (Repository r : repos) {
+                repoComboBox.getItems().add(r.getName());
 
+            }
+        }
+    }
+    @FXML
+    private void onSelectRepo () {
+        Object currentRepo = repoComboBox.getValue();
+        Object currentOrg = orgComboBox.getValue();
+        if (currentRepo == null) {
+            return;
+        }
+        GithubService.cloneRepository(
+                MainApplication.appProperties.getOrg(currentOrg.toString())
+                        .getRepo(currentRepo.toString())
+        );
+        rootFolder = new File("src/main/resources/gitRepos/" + currentRepo.toString());
+        fileTreeLabel.setVisible(false);
+        fileProgressSpinner.setVisible(true);
+        reloadFileTree();
+        fileProgressSpinner.setVisible(false);
+        fileTree.setVisible(true);
+    }
 }

@@ -22,11 +22,28 @@ public class Organization {
         this.login = login;
     }
 
-
+    public Repository getRepo (String name) {
+        int ind = getRepoNames().indexOf(name);
+        System.out.println("Selected Repo: " + name);
+        return repos.get(ind);
+    }
     public boolean addRepo(Repository repository) {
         return repos.add(repository);
     }
 
+    private ArrayList<String> getRepoNames() {
+        ArrayList<String> retArr = new ArrayList<>();
+        for (Repository r: repos) {
+            retArr.add(r.getName());
+        }
+        return retArr;
+    }
+
+    public ArrayList<Repository> getRepos() {return this.repos;}
+
+    public void setRepos(ArrayList<Repository> repos) {
+        this.repos = repos;
+    }
     public Repository remove(int index) {
         return repos.remove(index);
     }

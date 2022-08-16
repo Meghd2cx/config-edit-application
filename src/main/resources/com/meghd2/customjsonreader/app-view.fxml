@@ -32,11 +32,11 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -47,8 +47,11 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.meghd2.customjsonreader.appController">
@@ -94,26 +97,52 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane>
+        <AnchorPane prefWidth="222.0">
           <children>
-                  <ListView fx:id="fileTree" layoutY="47.0" onMouseClicked="#getSelectedFile" prefHeight="463.0" prefWidth="222.0" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0" />
-            <Label fx:id="filePanelLabel" alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Files" textAlignment="CENTER" wrapText="false">
+                  <ListView fx:id="fileTree" layoutY="66.0" onMouseClicked="#getSelectedFile" prefHeight="450.0" prefWidth="226.0" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="66.0" />
+                  <Label fx:id="fileTreeLabel" disable="true" layoutX="14.0" layoutY="232.0" prefHeight="42.0" prefWidth="222.0" textAlignment="CENTER" visible="false" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="50.0">
+                     <textFill>
+                        <LinearGradient endX="1.0" endY="1.0">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="0.4699999988079071" green="0.4699999988079071" blue="0.4699999988079071" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </LinearGradient>
+                     </textFill>
+                     <font>
+                        <Font name="Segoe UI Bold" size="14.0" />
+                     </font></Label>
+                  <MFXProgressSpinner fx:id="fileProgressSpinner" layoutX="84.0" layoutY="250.0" radius="10.0" visible="false" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="84.0" />
+                  <HBox fx:id="orgRepoHBox" alignment="TOP_CENTER" layoutY="22.0" prefHeight="27.0" prefWidth="222.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="22.0">
+                     <children>
+                        <ComboBox fx:id="orgComboBox" minWidth="100.0" onAction="#updateReposDropdown" promptText="Organization" scaleShape="false" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="repoComboBox" onAction="#onSelectRepo" prefHeight="25.0" promptText="Repository" scaleShape="false" HBox.hgrow="ALWAYS" />
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </HBox>
+            <Label fx:id="filePanelLabel" alignment="CENTER" layoutX="3.0" layoutY="2.0" minWidth="60.0" prefHeight="16.0" prefWidth="60.0" style="&#10;" text="Files" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="5.0">
               <font>
-                <Font size="18.0" fx:id="x1" />
+                <Font name="System Bold" size="24.0" fx:id="x1" />
               </font>
               <textFill>
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <Label fx:id="fileTreeLabel" layoutX="14.0" layoutY="232.0" prefHeight="86.0" prefWidth="198.0" textAlignment="CENTER" textFill="RED" visible="false" AnchorPane.bottomAnchor="232.80000000000004" AnchorPane.topAnchor="232.0" />
-                  <MFXProgressSpinner fx:id="fileProgressSpinner" layoutX="84.0" layoutY="250.0" visible="false" AnchorPane.bottomAnchor="250.80000000000004" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="250.0" />
-                  <MFXComboBox fx:id="repoComboBox" layoutX="3.0" layoutY="508.0" prefHeight="42.0" prefWidth="222.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                  <MFXComboBox fx:id="orgComboBox" layoutX="93.0" layoutY="4.0" prefHeight="37.0" prefWidth="114.0" AnchorPane.rightAnchor="10.0" />
           </children>
         </AnchorPane>
       <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="546.0" prefWidth="444.0">
         <children>
-          <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" AnchorPane.leftAnchor="14.0" />
+          <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="5.0" />
                   <TextArea fx:id="selectedFileField" layoutY="44.0" prefHeight="502.0" prefWidth="443.0" promptText="Select file from Files panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-13.0" AnchorPane.topAnchor="44.0" />
                   <MFXToggleButton layoutX="378.0" layoutY="6.0" prefHeight="42.0" prefWidth="54.0" radius="8.0" text="📖" AnchorPane.rightAnchor="1.2000000000000028" />
         </children>
@@ -173,7 +202,7 @@
         </AnchorPane>
       </items>
     </SplitPane>
-      <AnchorPane>
+      <AnchorPane prefWidth="1108.0">
          <VBox.margin>
             <Insets />
          </VBox.margin>

@@ -12,6 +12,11 @@ public class AppProperties {
         return orgs;
     }
 
+    public Organization getOrg(String login) {
+        int ind = getOrgNames().indexOf(login);
+        return orgs.get(ind);
+    }
+
     public ArrayList<String> getOrgNames() {
         ArrayList<String> retArr = new ArrayList<>();
         for (Organization o : orgs) {

@@ -245,7 +245,6 @@ public class launcherController implements Initializable{
         primaryStage.setScene(popup);
         primaryStage.setResizable(false);
         primaryStage.show();
-
     }
 }
 

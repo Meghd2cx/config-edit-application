@@ -15,6 +15,8 @@ module com.meghd2.customjsonreader {
     requires MaterialFX;
     requires VirtualizedFX;
     requires kotlin.stdlib;
+    requires org.eclipse.jgit;
+
 
     opens com.meghd2.customjsonreader to javafx.fxml;
     opens model to com.google.gson;

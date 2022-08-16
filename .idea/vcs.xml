@@ -2,5 +2,22 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/apollo_build" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/cerberus-sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/loki" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/platform" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/platform-manifest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/recipe-config-files" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/sctv-client-settings" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/sctv-client-web" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/smartcast-platform-layer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/smartcast-system-ui-app" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/system-ui-app-lite" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/vizio-dallas-module-manifests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/vizio-data-discovery-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/vizio-models" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/vizio-scfs-deployments" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/gitRepos/vizio-services-voice-search" vcs="Git" />
   </component>
 </project>

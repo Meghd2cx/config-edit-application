@@ -4,18 +4,25 @@ import com.google.gson.Gson;
 import model.Organization;
 import model.Repository;
 import model.UserProperties;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.internal.storage.dfs.DfsRepository;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class GithubService {
 
@@ -42,7 +49,6 @@ public class GithubService {
                 System.out.println(responseStr);
                 throw new IOException();
             }
-            System.out.println("Response string" + responseStr);
             JSONObject retJSON = new JSONObject(responseStr);
             username = retJSON.getString("login");
 
@@ -127,15 +133,19 @@ public class GithubService {
 
             for (int i = 0; i < repos.length(); i++) {
                 JSONObject repoJSON = repos.getJSONObject(i);
-                String ownerOrg = getRepoOwnerLogin(repoJSON.getString("owner"));
+                String ownerOrg = getRepoOwnerLogin(repoJSON.getJSONObject("owner"));
                 ArrayList<String> orgNameList = MainApplication.appProperties.getOrgNames();
                 //Adds organization to AppProperties if not already added
                 if (!orgNameList.contains(ownerOrg)) {
                     ArrayList<Organization> appOrgs = MainApplication.appProperties.getOrgs();
-                    appOrgs.add(gson.fromJson(repoJSON.getString("owner"),Organization.class));
+                    String ownerStr = repoJSON.getJSONObject("owner").toString();
+                    appOrgs.add(gson.fromJson(ownerStr,Organization.class));
+
+                    //Manually adding repos list since gson.fromJSON sets all vars not found in JSON as null
+                    appOrgs.get(appOrgs.size()-1).setRepos(new ArrayList<Repository>());
                 }
                 //Adds repo to owner organization
-                Organization o = MainApplication.appProperties.getOrgs().get(orgNameList.indexOf(ownerOrg));
+                Organization o = MainApplication.appProperties.getOrg(ownerOrg);
                 o.addRepo(gson.fromJson(repoJSON.toString(), Repository.class));
             }
 
@@ -146,16 +156,36 @@ public class GithubService {
         System.gc();
     }
 
-    private static String getRepoOwnerLogin(String owner) {
-        JSONObject ownerObj = new JSONObject(owner);
-        return ownerObj.getString("login");
+    private static String getRepoOwnerLogin(JSONObject owner) {
+        return owner.getString("login");
     }
 
-    private void getRepoList() {
-
-    }
-
-    private static void updateRepo(Organization org) {
+    public static void cloneRepository(Repository repo) {
+//        try {
+//            InputStream inputStream = GithubService.class.getClassLoader().getResourceAsStream("app.properties");
+//            Properties appProps = new Properties();
+//            appProps.load(inputStream);
+//            String clientSecret = appProps.getProperty("githubClientSecret");
+//
+//            String repoUrl = "https://" + clientSecret + "@github.com/" + repo.getFull_name()+".git";
+//            String cloneDirectoryPath = "src/main/resources/gitRepos/";
+//
+//            System.out.println("Cloning "+repoUrl+" into "+cloneDirectoryPath);
+//            Git.cloneRepository()
+//                    .setURI(repoUrl)
+//                    .setDirectory(Paths.get(cloneDirectoryPath).toFile())
+//                    .call();
+//            System.out.println("Completed Cloning");
+//
+//            Git git = new Git();
+//            String remoteUrl = "https://${token}@github.com/user/" + repo.getFull_name() + ".git";
+//            CredentialsProvider credentialsProvider = (CredentialsProvider) new UsernamePasswordCredentialsProvider("${token}", "");
+//            git.push().setRemote(remoteUrl).setCredentialsProvider(credentialsProvider).call();
+//
+//        } catch (GitAPIException | IOException e) {
+//            System.out.println("Exception occurred while cloning repo");
+//            e.printStackTrace();
+//        }
 
     }
 }
