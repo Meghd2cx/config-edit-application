@@ -1,5 +1,11 @@
 package model;
 
+
+/**
+ * The UserProperties class stores relevant properties from the GitHub User API.
+ *
+ * @author Meghnath Dey
+ * */
 public class UserProperties {
 
     String login;

@@ -4,6 +4,12 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.ParseException;
 
+
+/**
+ * JSONHeader class that implements Header interface to standardize API request headers
+ *
+ * @author Meghnath Dey
+ * */
 public class JSONHeader implements Header {
     @Override
     public HeaderElement[] getElements() throws ParseException {

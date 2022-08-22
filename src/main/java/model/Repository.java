@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * The Repository class acts as a representation of a Github Repository. Does NOT contain contents of the repository itself but associated descriptions and URLs.
+ * @author Meghnath Dey
+ * */
 public class Repository {
 
     public int getId() {

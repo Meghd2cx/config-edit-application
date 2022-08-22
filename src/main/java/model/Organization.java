@@ -3,6 +3,11 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * The Organization class acts as a representation of a GitHub repository. Also contains all associated repositories of the organization.
+ *
+ * @author Meghnath Dey
+ * */
 public class Organization {
 
     private String login;

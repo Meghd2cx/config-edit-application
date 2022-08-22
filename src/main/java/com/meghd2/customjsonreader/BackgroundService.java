@@ -1,5 +1,8 @@
 package com.meghd2.customjsonreader;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import model.UserProperties;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -10,22 +13,37 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 
+
+/**
+ * BackgroundService class implementing Runnable interface. Allows for consistent creation and interface with Background/multi-threaded services.
+ *
+ * @author Meghnath Dey
+ * */
 public class BackgroundService implements Runnable {
 
-    private BackgroundServiceType type ;
-    private String [] options ;
+    /** Current type of BackgroundService */
+    private final BackgroundServiceType type ;
+    /** String array with all necessary function args*/
+    private final String [] options ;
 
+    /**
+     * Default and only constructor for Background Service
+     *
+     * @param type Type of Background Service being instantiated
+     * @param options Arguments needed to run specified background service
+     * */
     public BackgroundService (BackgroundServiceType type, String ... options) {
         this.type = type;
         this.options = options;
     }
 
+    /**
+     * Runnable interface override function. Used by Thread class to create background thread with specified type and arguments
+     * */
     @Override
     public void run() {
         switch (type) {
@@ -33,11 +51,52 @@ public class BackgroundService implements Runnable {
             case FETCHREPO -> fetchRepo();
             case VALIDATEJSON -> validateJSON();
             case SAVELOCAL -> saveLocal();
+            case LOCALJSONSERVER -> startLocalJSONServer();
             default -> System.out.println("Not a valid background service");
+        }
+    }
+
+    /**
+     * Creates local HTTP server that hosts given JSON content string for use with webView and JSON object view in app-view.fxml view panel
+     * */
+    private void startLocalJSONServer() {
+        try {
+            String selectedFileContents = options[0];
+            HttpServer server = null;
+            server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
+            server.createContext("/test", new MyHandler(selectedFileContents));
+            server.setExecutor(null);
+            server.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }
 
+    /**
+     * Static Handler class used to respond to HTTP server request
+     * @author Meghnath Dey
+     * */
+    static class MyHandler implements HttpHandler {
+
+        private String jsonResp;
+        public MyHandler(String jsonResp) {
+            this.jsonResp = jsonResp;
+        }
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            String response = jsonResp;
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    /**
+     * On GitHub authentication, validates whether device code has been entered every 5 seconds
+     * @return Whether user has been validated
+     * */
     private boolean validateUserLoop() {
         while (!validateSignin()) {
             try {
@@ -50,6 +109,9 @@ public class BackgroundService implements Runnable {
         return true;
     }
 
+    /**
+     * @return Whether current user is validated
+     * */
     private boolean validateSignin() {
 
         MainApplication.appProperties.setUserProperties(retriveUserInfo());
@@ -58,6 +120,10 @@ public class BackgroundService implements Runnable {
         }
         return true;
     }
+    /**
+     * Sends GitHub POST request to validate whether user has input device flow code yet.
+     * @return UserProperties object with validated user's properties or null if not validated
+     * */
     private UserProperties retriveUserInfo() {
         CloseableHttpClient client = HttpClients.createDefault();
 
@@ -76,9 +142,7 @@ public class BackgroundService implements Runnable {
             String responseStr = EntityUtils.toString(response.getEntity());
             JSONObject retJSON = new JSONObject(responseStr);
             try {
-                //TODO: Add remaining OAuth returned fields + update UserProperties
                 retJSON.getString("access_token");
-                //TODO: finish verification process
                 System.out.println(responseStr);
                 UserProperties loggedinUser = new UserProperties();
                 loggedinUser.setAccess_token(retJSON.getString("access_token"));
@@ -100,6 +164,8 @@ public class BackgroundService implements Runnable {
         }
     }
 
+    /** Saves authenticated user's OAuth details to file
+     * @param userResponse User OAuth details returned from GitHub user authentication API*/
     private void saveUserToFile (String userResponse) {
 
         try {
@@ -119,16 +185,26 @@ public class BackgroundService implements Runnable {
         }
     }
 
+    /**
+     * TODO: Saves current state of JSON file to local repository
+     * */
     private void saveLocal() {
 
     }
 
+    /**
+     * TODO: Background method meant to validate JSON contents in real-time
+     * */
     private void validateJSON() {
         appController mCCopy = MainApplication.currentLoader.getController();
         System.out.println(mCCopy.selectedFileField.toString());
     }
 
+    /**
+     * TODO: Fetches most recent version of local repositories on app startup and refresh
+     * */
     private void fetchRepo() {
+
     }
 }
 

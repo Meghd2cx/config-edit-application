@@ -24,16 +24,29 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ *
+ * The GithubService class is a collection of static methods pertaining to GitHub API functions. These are largely used to update the current authenticated user
+ * but can also be used to retrive user data.
+ *
+ * @author Meghnath Dey
+ * */
 public class GithubService {
 
     private static final CloseableHttpClient client = HttpClients.createDefault();
     private static final Gson gson = new Gson();
 
 
+    /**
+     * Updates the Application user as well as associated organizations and repositories
+     * */
     public static void updateAll() {
         updateAppUser();
         updateAppOrgs();
     }
+    /**
+     * @return Currently authenticated user's github username
+     * */
     public static String getGithubUsername () {
         String username;
         try {
@@ -58,6 +71,10 @@ public class GithubService {
         }
         return username;
     }
+
+    /**
+     * @return List of current user's organizations
+     * */
     public static ArrayList getOrganizationList() {
         ArrayList<Organization> orgs = null;
         try {
@@ -88,6 +105,9 @@ public class GithubService {
         return orgs;
     }
 
+    /***
+     * Updated application user using GitHub user API
+     */
     public static void updateAppUser() {
         try {
             URIBuilder builder = new URIBuilder("https://api.github.com/user");
@@ -117,6 +137,9 @@ public class GithubService {
         System.gc();
     }
 
+    /**
+     * Updates the user's associated organizations
+     * */
     public static void updateAppOrgs() {
         try {
             //Sending GET request to repos API
@@ -156,10 +179,18 @@ public class GithubService {
         System.gc();
     }
 
+    /**
+     * Seperates logic of finding repository owner into seperate method
+     * @return The owner of the owner object passed in
+     * */
     private static String getRepoOwnerLogin(JSONObject owner) {
         return owner.getString("login");
     }
 
+    /**
+     * TODO: Auto clone repository if not found in local folder on repository selection from appController
+     * @param repo Repository to be cloned
+     * */
     public static void cloneRepository(Repository repo) {
 //        try {
 //            InputStream inputStream = GithubService.class.getClassLoader().getResourceAsStream("app.properties");

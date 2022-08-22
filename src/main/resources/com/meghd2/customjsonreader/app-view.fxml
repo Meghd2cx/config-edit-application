@@ -53,6 +53,7 @@
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.meghd2.customjsonreader.appController">
   <children>
@@ -144,7 +145,8 @@
         <children>
           <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="5.0" />
                   <TextArea fx:id="selectedFileField" layoutY="44.0" prefHeight="502.0" prefWidth="443.0" promptText="Select file from Files panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-13.0" AnchorPane.topAnchor="44.0" />
-                  <MFXToggleButton layoutX="378.0" layoutY="6.0" prefHeight="42.0" prefWidth="54.0" radius="8.0" text="📖" AnchorPane.rightAnchor="1.2000000000000028" />
+                  <MFXToggleButton fx:id="viewToggleButton" layoutX="378.0" layoutY="6.0" prefHeight="42.0" prefWidth="54.0" radius="8.0" text="📖" AnchorPane.rightAnchor="1.2000000000000028" />
+                  <WebView fx:id="webView" layoutX="3.0" layoutY="44.0" prefHeight="513.0" prefWidth="441.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.0" />
         </children>
       </AnchorPane>
         <AnchorPane prefHeight="551.0" prefWidth="155.0">
@@ -215,7 +217,7 @@
             <Color red="0.625" green="0.625" blue="0.625" fx:id="x4" />
           </textFill>
         </Label>
-            <Label fx:id="centerLowerLabel" layoutX="375.0" text="JSON File NOT Selected" textFill="RED" />
+            <Label fx:id="centerLowerLabel" layoutX="387.0" text="JSON File NOT Selected" textFill="RED" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <Label alignment="CENTER_RIGHT" font="$x3" layoutX="744.0" maxWidth="-1.0" text="Repository - Branch" textFill="$x4" AnchorPane.rightAnchor="60.0" />
          </children>
       </AnchorPane>

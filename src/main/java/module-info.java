@@ -16,6 +16,7 @@ module com.meghd2.customjsonreader {
     requires VirtualizedFX;
     requires kotlin.stdlib;
     requires org.eclipse.jgit;
+    requires jdk.httpserver;
 
 
     opens com.meghd2.customjsonreader to javafx.fxml;

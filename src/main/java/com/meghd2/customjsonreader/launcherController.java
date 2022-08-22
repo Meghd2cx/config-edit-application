@@ -40,16 +40,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-//TODO: Improve background thread verification method. Currently operated on interrupting thread at timed interval
-//TODO: Create singleton thread based out of Main that runs login polling from app start, automatically killing itself after user is validated and saved
+/**
+ * This class defines all necessary functions and elements present on the launch-view. All elements annotated by @FXML is referenced by its associated
+ * FXML element in the launch-view.fxml file. All functions annotated by @FXML are also referenced by an FXML element in the launch-view.fxml file.
+ *
+ * @author Meghnath Dey
+ *
+ * TODO: Improve background thread verification method. Currently operated on interrupting thread at timed interval
+ * TODO: Create singleton thread based out of Main that runs login polling from app start, automatically killing itself after user is validated and saved
+ * */
+
 public class launcherController implements Initializable{
 
+    /** Represent the GitHub sign-in button*/
     @FXML
     Button signIn;
+    /** Represent the launch app button*/
     @FXML
     Button launchApp;
 
+    /** Stores primaryStage for use with main app and Github authentication window launches*/
     public static Stage primaryStage = new Stage();
+    /**
+     * GitHub API response properties
+     * */
     String githubDomain;
     String clientId;
     String clientSecret;
@@ -60,6 +74,9 @@ public class launcherController implements Initializable{
     String user_code = "";
 
 
+    /**
+     * Run automatically when associated launch-view.fxml is loaded.
+     * */
     @Override
     public void initialize (URL location, ResourceBundle resources) {
         disableAppLaunch();
@@ -69,6 +86,9 @@ public class launcherController implements Initializable{
         }
         disableAppLaunch();
     }
+    /** Creates FXMLLoader object and loads app-view.fxml resource into application's current loader.
+     * Sets scene and stage for main application and sets the primary stage as the app.
+     * */
     @FXML
     protected void onLaunchButtonClick() throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -88,6 +108,11 @@ public class launcherController implements Initializable{
          MainApplication.launchStage.close();
          primaryStage.show();
     }
+
+    /**
+     * Event specific function, loads GitHub API keys into local variables. Requests OAuth verification code using GET request from GitHub API.
+     * Starts validateUser background thread. Then shows the GitHub popup to allow the user to copy the code and sign in using a web browser.
+     * */
     @FXML
     protected void onSignInButtonClick() {
         try {
@@ -137,13 +162,20 @@ public class launcherController implements Initializable{
         }
 
     }
-    /** Methods used for enabling/disabling launcher controls */
+
+    /**
+     * Run when signin is successful and app launch is allowed by enabling launch button and disabling sign in button
+     * */
     private void enableAppLaunch() {
         signIn.setText("Signed In");
         signIn.setDisable(true);
         signIn.setTextFill(Color.valueOf("00FF00"));
         launchApp.setDisable(false);
     }
+
+    /**
+     * Run when signin is not successful and app launch is not allowed by disabling launch button and enabling sign in button
+     * */
     private void disableAppLaunch() {
         launchApp.setDisable(true);
         signIn.setDisable(false);
