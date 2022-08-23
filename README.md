@@ -15,7 +15,7 @@ are done by hand
 
 ## 2. Features
 ### Launcher
-- Log into Vizio work account allowing for integration with other applications
+- Log into GitHub account allowing for integration with other applications
 - Stay logged in once application has been closed
 - Approachable interface for new users
 
