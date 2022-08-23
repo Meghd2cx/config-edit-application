@@ -39,8 +39,7 @@ modules / settings
 - Commit / PR changes made on selected config file
 - Can be used in the future to add additional information as configs change
 
-## 4. Persistence
-## 5. Integration
+## 3. Integration
 ### Github
 - Access to company repositories
 - Permission to clone, checkout, and PR
@@ -49,5 +48,3 @@ modules / settings
 - Access to config update tickets
 - Reassign ticket status once changes have been made / approved
 - Connect user with assigned tickets
-
-## 6. Design Diagram
